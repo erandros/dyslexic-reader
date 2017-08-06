@@ -37,9 +37,12 @@ function process(_this) {
   var length = t.length;
   var spans = [];
   var span;
+  var buffer = '';
 
   function add() {
     count = 0;
+    setInnerHTML(span, buffer);
+    buffer = '';
     addMode(span, modes[mode]);
     spans.push(span);
     span = null;
@@ -57,8 +60,7 @@ function process(_this) {
     if (!span) {
       span = createSpan();
     }
-    span.innerHTML += char;
-
+    buffer += char;
     if ((char == " " && count > 70) || (count > 140)) {
       add();
       increaseMode();
@@ -69,6 +71,10 @@ function process(_this) {
     add();
   }
 	return spans;
+}
+
+function setInnerHTML(span, html) {
+  span.innerHTML += html;
 }
 
 function addMode(span, mode) {
