@@ -1,74 +1,83 @@
-var sheet = (function() {
-	// Create the <style> tag
-	var style = document.createElement("style");
-
-	// Add a media (and/or media query) here if you'd like!
-	// style.setAttribute("media", "screen")
-	// style.setAttribute("media", "only screen and (max-width : 1024px)")
-
-	// WebKit hack :(
-	style.appendChild(document.createTextNode(""));
-
-	// Add the <style> element to the page
-	document.head.appendChild(style);
-
-	return style.sheet;
-})();
-
-sheet.insertRule(".dr.red { color: red; }", 0);
-sheet.insertRule(".dr.black { color: black; }", 0);
-sheet.insertRule(".dr.blue { color: blue; }", 0);
-
 var count = 0;
 var mode = 0;
 var modes = ["black", "blue", "black", "red"];
 
-function increaseMode() {
-  mode++;
-  if (mode == 4) {
-    mode = 0;
-  }
-}
+var spanEl = document.createElement('span');
+spanEl.classList.add('dr');
 
-$( "p" ).contents()
-.filter(function() {
-  return this.nodeType === 3;
-})
+/*
+The algorithm works as follows:
+count = 0
+For every p in all p's
+  For every child node n of p that is of type text
+    For every char in n
+      If no span has been defined
+        Define the span
+      Add char to span innerHtml
+      If the (char is " " and count > 70) or (count > 140)
+        count = 0, add the span, undefine it
+      Increase the count
+    If span is defined
+      count = 0, add the span, undefine it
+*/
+
+
+$( "p" )
+.contents()
+  .filter(function() {
+    return this.nodeType === 3;
+  })
 .each(function(index) {
 	var spans = process(this);
 	replace(this, spans);
 });
 
 function process(_this) {
-  var t = _this.nodeValue
+  var t = _this.nodeValue;
   var length = t.length;
   var spans = [];
+  var span;
+
+  function add() {
+    count = 0;
+    addMode(span, modes[mode]);
+    spans.push(span);
+    span = null;
+  }
+
+  function increaseMode() {
+    mode++;
+    if (mode == 4) {
+      mode = 0;
+    }
+  }
 
   for(var i = 0; i < length; i++) {
     var char = t[i];
-		var span = createSpan(char);
-    spans.push(span);
-    if (char == " ") {
-      if (count > 70) {
-        count = 0;
-        increaseMode();
-      }
-      else {
-        span.classList.add(modes[mode]);
-      }
+    if (!span) {
+      span = createSpan();
     }
-    else {
-      span.classList.add(modes[mode]);
-      count++;
+    span.innerHTML += char;
+
+    if ((char == " " && count > 70) || (count > 140)) {
+      add();
+      increaseMode();
     }
+    count++;
+  }
+  if (span) {
+    add();
   }
 	return spans;
 }
 
-function createSpan(char) {
-	var span = document.createElement('span');
-	span.innerHTML = char;
-	span.classList.add('dr');
+function addMode(span, mode) {
+  span.className += " " + mode;
+}
+
+function createSpan() {
+	var span = spanEl.cloneNode(false);
+  span.innerHTML = "";
 	return span;
 }
 
