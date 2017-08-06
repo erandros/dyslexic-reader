@@ -10,7 +10,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["jquery.js", "borderify.js"],
-      "css": ["main.css"]
+      "css": ["font.css", "main.css"]
     }
   ]
 }
