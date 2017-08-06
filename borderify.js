@@ -22,7 +22,7 @@ For every p in all p's
 */
 
 
-$( "p" )
+$( "p,li" )
 .contents()
   .filter(function() {
     return this.nodeType === 3;
