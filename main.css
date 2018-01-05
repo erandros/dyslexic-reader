@@ -1,8 +1,2 @@
-.dr.blue { color: blue; }
-.dr.black { color: black; }
-.dr.red { color: red; }
-
-
-p, li {
-  font-family: "opendyslexic3";
-}
+.dr.red { background-color: #ffbd0033; }
+.dr.blue { background-color: #7ac9a233; }

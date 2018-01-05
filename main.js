@@ -33,7 +33,7 @@ function start(result) {
   var groupSize = result.groupSize;
   groupSize = groupSize ? parseInt(groupSize) : 70;
 
-  $( "p,li" )
+  $( "p,li,td" )
   .contents()
     .filter(function() {
       return this.nodeType === 3;
