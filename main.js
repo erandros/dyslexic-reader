@@ -12,6 +12,8 @@ function onError(error) {
 browser.storage.local.get("groupSize")
 .then(start, onError)
 
+document.addEventListener("turbolinks:load", start)
+
 /*
 The algorithm works as follows:
 count = 0
