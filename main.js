@@ -5,13 +5,22 @@ var modes = ["black", "blue", "black", "red"]
 var spanEl = document.createElement("span")
 spanEl.classList.add("dr")
 
+/**
+ * Logs the error passed, prepends an 'Error: ' string.
+ * @param {string} error The error to report
+ */
 function onError(error) {
   console.log(`Error: ${error}`)
 }
 
 browser.storage.local.get("groupSize")
-  .then(start, onError)
+  .then(function(result) {
+    var groupSize = result.groupSize
+    groupSize = groupSize ? parseInt(groupSize) : 70
+    start(groupSize)
+  }, onError)
 
+// Turbolinks gem
 document.addEventListener("turbolinks:load", start)
 
 /*
@@ -31,9 +40,7 @@ For every p in all p's
 */
 
 
-function start(result) {
-  var groupSize = result.groupSize
-  groupSize = groupSize ? parseInt(groupSize) : 70
+function start(groupSize) {
 
   $("p,li,td")
     .contents()
@@ -87,20 +94,38 @@ function start(result) {
   }
 }
 
-function setInnerHTML(span, html) {
-  span.innerHTML += html
+/**
+ * Appends html to innerHTML of el
+ * @param {HTMLElement} el The element
+ * @param {*} html The html to append
+ */
+function setInnerHTML(el, html) {
+  el.innerHTML += html
 }
 
-function addMode(span, mode) {
-  span.className += " " + mode
+/**
+ * Adds a mode to the className
+ * @param {HTMLElement} el The element
+ * @param {string} mode The mode to add
+ */
+function addMode(el, mode) {
+  el.className += " " + mode
 }
 
+/**
+ * Creates a span
+ */
 function createSpan() {
   var span = spanEl.cloneNode(false)
   span.innerHTML = ""
   return span
 }
 
-function replace(_this, spans) {
-  _this.replaceWith.apply(_this, spans)
+/**
+ * Replaces el with the array of spans
+ * @param {HTMLElement} el The element
+ * @param {HTMLCollection/Array} spans The spans to replace el with
+ */
+function replace(el, spans) {
+  el.replaceWith.apply(el, spans)
 }
