@@ -1,16 +1,16 @@
-var count = 0;
-var mode = 0;
-var modes = ["black", "blue", "black", "red"];
+var count = 0
+var mode = 0
+var modes = ["black", "blue", "black", "red"]
 
-var spanEl = document.createElement('span');
-spanEl.classList.add('dr');
+var spanEl = document.createElement("span")
+spanEl.classList.add("dr")
 
 function onError(error) {
-  console.log(`Error: ${error}`);
+  console.log(`Error: ${error}`)
 }
 
 browser.storage.local.get("groupSize")
-.then(start, onError)
+  .then(start, onError)
 
 document.addEventListener("turbolinks:load", start)
 
@@ -32,75 +32,75 @@ For every p in all p's
 
 
 function start(result) {
-  var groupSize = result.groupSize;
-  groupSize = groupSize ? parseInt(groupSize) : 70;
+  var groupSize = result.groupSize
+  groupSize = groupSize ? parseInt(groupSize) : 70
 
-  $( "p,li,td" )
-  .contents()
+  $("p,li,td")
+    .contents()
     .filter(function() {
-      return this.nodeType === 3;
+      return this.nodeType === 3
     })
-  .each(function(index) {
-  	var spans = process(this);
-  	replace(this, spans);
-  });
+    .each(function() {
+      var spans = process(this)
+      replace(this, spans)
+    })
 
   function process(_this) {
-    var t = _this.nodeValue;
-    var length = t.length;
-    var spans = [];
-    var span;
-    var buffer = '';
+    var t = _this.nodeValue
+    var length = t.length
+    var spans = []
+    var span
+    var buffer = ""
 
     function add() {
-      count = 0;
-      setInnerHTML(span, buffer);
-      buffer = '';
-      addMode(span, modes[mode]);
-      spans.push(span);
-      span = null;
+      count = 0
+      setInnerHTML(span, buffer)
+      buffer = ""
+      addMode(span, modes[mode])
+      spans.push(span)
+      span = null
     }
 
     function increaseMode() {
-      mode++;
+      mode++
       if (mode == 4) {
-        mode = 0;
+        mode = 0
       }
     }
 
     for(var i = 0; i < length; i++) {
-      var char = t[i];
+      var char = t[i]
       if (!span) {
-        span = createSpan();
+        span = createSpan()
       }
-      buffer += char;
+      buffer += char
       if ((char == " " && count > groupSize) || (count > groupSize + 70)) {
-        add();
-        increaseMode();
+        add()
+        increaseMode()
       }
-      count++;
+      count++
     }
     if (span) {
-      add();
+      add()
     }
-  	return spans;
+    return spans
   }
 }
 
 function setInnerHTML(span, html) {
-  span.innerHTML += html;
+  span.innerHTML += html
 }
 
 function addMode(span, mode) {
-  span.className += " " + mode;
+  span.className += " " + mode
 }
 
 function createSpan() {
-	var span = spanEl.cloneNode(false);
-  span.innerHTML = "";
-	return span;
+  var span = spanEl.cloneNode(false)
+  span.innerHTML = ""
+  return span
 }
 
 function replace(_this, spans) {
-	_this.replaceWith.apply(_this, spans);
+  _this.replaceWith.apply(_this, spans)
 }
